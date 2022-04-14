@@ -25,18 +25,63 @@ Install PyTorch and dependencies from http://pytorch.org
 Install other python requirements
 
 ## Datasets
-TODO
+we create a LANDSCAPE-CIR dataset with 31K high-resolution images from Flickr including 28K training images and 3K test images. We
+use the pretrained segmentation network DeepLabV2 to compute the scene parsing mask for each image. Finally we label the color attribute for each image. Therefore,
+at most 70 attributes are annotated in one image. We process the VIP person parsing dataset in the same way as [MISC](https://github.com/shuchenweng/MISC) and name it as PERSON-CIR, which includes 42K training images and 6K test images.
 
 ## Getting Started
-Download the [proccessed Landscape dataset](https://drive.google.com/file/d/1KQqIrcLvnL89LsuxAMN5uHehNcZPzfdU/view) and copy them under DATA_DIR.
+Download the [Landscape-CIR dataset](https://drive.google.com/file/d/1KQqIrcLvnL89LsuxAMN5uHehNcZPzfdU/view) or [PERSON-CIR dataset](https://drive.google.com/file/d/13to7_krxUlW6bYiA2EojhsxJ5wGnF40s/view?usp=sharing).
+
+Download the [pretrained weights](https://drive.google.com/drive/folders/1CnkJ7IetA7EBVGzbFTeAzpcgx-4tRpm-?usp=sharing) of image and text encoders
+
+Download the [pretrained weights](https://drive.google.com/drive/folders/1hxww-Kl7BF_gd2jKhNqSJ5ToAnAEiTFL?usp=sharing) of models for finetuning or directly repainting your images.
+
+### 1) Pretrain encoders:
+## PERSON-CIR dataset:
+```
+python pretrain_DAMSM.py --load_size 384 --crop_size 256  --dataroot  YOURS_DATASET_DIR --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
+```
+
+## Landscape-CIR dataset (256): 
+```
+python pretrain_DAMSM.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
+```
+
+## Landscape-CIR dataset (512):
+```
+python pretrain_DAMSM.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
+```
 
 ### 1) Training
+## PERSON-CIR dataset:
 ```
-TODO
+python train.py --load_size 384 --crop_size 256  --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR --batchSize YOURS_BATCH_SIZE --test_bs 6   --gpu_ids YOURS_GPU_ID
 ```
+
+## Landscape-CIR dataset (256): 
+```
+python train.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --test_bs 6 --gpu_ids YOURS_GPU_ID
+```
+
+## Landscape-CIR dataset (512):
+```
+python train.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --test_bs 6  --gpu_ids YOURS_GPU_ID
+```
+
 ### 2) Testing
+## PERSON-CIR dataset:
 ```
-TODO
+python test.py --load_size 256 --crop_size 256  --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR --batchSize 6  --gpu_ids YOURS_GPU_ID
+```
+
+## Landscape-CIR dataset (256): 
+```
+python test.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize 6 --gpu_ids YOURS_GPU_ID
+```
+
+## Landscape-CIR dataset (512):
+```
+python test.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize 6 --gpu_ids YOURS_GPU_ID
 ```
 
 ## License
