@@ -37,49 +37,49 @@ Download the [pretrained weights](https://drive.google.com/drive/folders/1CnkJ7I
 Download the [pretrained weights](https://drive.google.com/drive/folders/1hxww-Kl7BF_gd2jKhNqSJ5ToAnAEiTFL?usp=sharing) of models for finetuning or directly repainting your images.
 
 ### 1) Pretrain encoders:
-## PERSON-CIR dataset:
+PERSON-CIR dataset:
 ```
 python pretrain_DAMSM.py --load_size 384 --crop_size 256  --dataroot  YOURS_DATASET_DIR --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (256): 
+Landscape-CIR dataset (256): 
 ```
 python pretrain_DAMSM.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (512):
+Landscape-CIR dataset (512):
 ```
 python pretrain_DAMSM.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --gpu_ids YOURS_GPU_ID
 ```
 
 ### 1) Training
-## PERSON-CIR dataset:
+PERSON-CIR dataset:
 ```
 python train.py --load_size 384 --crop_size 256  --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR --batchSize YOURS_BATCH_SIZE --test_bs 6   --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (256): 
+Landscape-CIR dataset (256): 
 ```
 python train.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --test_bs 6 --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (512):
+Landscape-CIR dataset (512):
 ```
 python train.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize YOURS_BATCH_SIZE --test_bs 6  --gpu_ids YOURS_GPU_ID
 ```
 
 ### 2) Testing
-## PERSON-CIR dataset:
+PERSON-CIR dataset:
 ```
 python test.py --load_size 256 --crop_size 256  --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR --batchSize 6  --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (256): 
+Landscape-CIR dataset (256): 
 ```
 python test.py --load_size 384 --crop_size 256 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize 6 --gpu_ids YOURS_GPU_ID
 ```
 
-## Landscape-CIR dataset (512):
+Landscape-CIR dataset (512):
 ```
 python test.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR  --dataset_mode landscape --batchSize 6 --gpu_ids YOURS_GPU_ID
 ```
