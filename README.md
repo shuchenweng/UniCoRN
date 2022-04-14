@@ -69,6 +69,8 @@ python train.py --load_size 768 --crop_size 512 --dataroot YOURS_DATASET_DIR --p
 ```
 
 ### 2) Testing
+Modify the pretrained model weights in test.py L20-25, and execute commands below.
+
 PERSON-CIR dataset:
 ```
 python test.py --load_size 256 --crop_size 256  --dataroot YOURS_DATASET_DIR --pretrained_dir YOURS_ENCODER_DIR --batchSize 6  --gpu_ids YOURS_GPU_ID
