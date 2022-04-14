@@ -1,6 +1,6 @@
 # UniCoRN: A Unified Conditional Image Repainting Network (official)
 
-## Introducation
+## Introduction
 This is the author's official PyTorch UniCoRN implementation.
 
 We present UniCoRN (A Unified Conditional Image Repainting Network), an end-to-end trainable deep neural network for Conditional Image Repainting (CIR). UniCoRN breaks the two-phase dependency assumption in the CIR task with a newly designed unified framework.
@@ -12,7 +12,7 @@ With UniCoRN, users could create or edit objects with desired color and geometry
 
 ## Prerequisites
 * Python 3.6
-* PyTorch 1.0
+* PyTorch 1.10
 * NVIDIA GPU + CUDA cuDNN
 
 ## Installation
