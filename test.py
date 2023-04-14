@@ -23,6 +23,10 @@ def load_network(net, dataset_mode, crop_size):
         save_path = os.path.join('E:/samsung/pretrained/unicorn/model_weights/landscape-256/latest_landscape_pixel-wise_256_sota.pth')
     elif dataset_mode == 'landscape' and crop_size == 512:
         save_path = os.path.join('E:/samsung/pretrained/unicorn/model_weights/landscape-512/latest_landscape_pixel-wise_512_sota.pth')
+    elif dataset_mode == 'traffic' and crop_size == 256:
+        save_path = os.path.join('E:/samsung/pretrained/unicorn/model_weights/traffic-256/latest_traffic_pixel-wise_256_sota.pth') #todo
+    elif dataset_mode == 'traffic' and crop_size == 512:
+        save_path = os.path.join('E:/samsung/pretrained/unicorn/model_weights/traffic-512/latest_traffic_pixel-wise_512_sota.pth') #todo
     weights = torch.load(save_path, map_location=lambda storage, loc: storage)
     net.load_state_dict(weights, strict=False)
     return net
