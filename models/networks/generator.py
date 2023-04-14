@@ -211,7 +211,7 @@ class GlobalAttentionGeneral(nn.Module):
         queryL = ih * iw
         batch_size, sourceL = att_emb.size(0), att_emb.size(2)
         seg = seg.view(batch_size, self.idf, queryL)
-        if self.opt.dataset_mode != 'landscape':
+        if self.opt.dataset_mode != 'landscape' and self.opt.dataset_mode != 'traffic':
             max_seg = torch.zeros([batch_size, queryL])
             for i in range(self.idf):
                 nonzero = torch.nonzero(seg[:, i, :])
@@ -270,7 +270,7 @@ class MultiHeadAttention(nn.Module):
             attn = attn.view(bs, queryL, sourceL)
             attn = torch.transpose(attn, 1, 2).contiguous()
             # attn: [bs, sourceL, queryL]  [bs, 11, ih *iw]
-        elif self.opt.dataset_mode == 'landscape':
+        elif self.opt.dataset_mode == 'landscape' or self.opt.dataset_mode == 'traffic':
             attn = seg
 
         weightedContext_list = []
