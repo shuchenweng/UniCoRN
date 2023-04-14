@@ -144,7 +144,7 @@ def get_params(opt, size=None):
         w, h = size
     if opt.preprocess_mode == 'scale_width_and_crop':
         # default choice : scale_width_and_crop
-        if opt.dataset_mode == 'landscape':
+        if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
             if w >= h:
                 new_w = int(opt.load_size * w / h)
                 new_h = opt.load_size
@@ -163,7 +163,7 @@ def get_params(opt, size=None):
         x = random.randint(0, np.maximum(0, new_w - opt.crop_size))
         y = random.randint(0, np.maximum(0, new_h - int(opt.crop_size // opt.aspect_ratio)))
     else:
-        if opt.dataset_mode == 'landscape':
+        if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
             if w >= h:
                 x = int((new_w - opt.crop_size)/2)
                 y = 0
@@ -180,7 +180,7 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=Tr
 
     def __scale_width(opt, img, target_width, method=Image.BICUBIC):
         ow, oh = img.size
-        if opt.dataset_mode == 'landscape':
+        if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
             if ow >= oh:
                 w = int(target_width * ow / oh)
                 h = target_width
@@ -210,7 +210,7 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=Tr
         transform_list.append(transforms.Lambda(lambda img: __scale_width(opt, img, opt.load_size, method)))
 
     if 'crop' in opt.preprocess_mode:
-        if opt.dataset_mode == 'landscape':
+        if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
             transform_list.append(transforms.Lambda(lambda img: __crop(opt, img, params['crop_pos'], opt.crop_size)))
         elif opt.dataset_mode == 'vip':
             if opt.isTrain:     # when test, load_size=crop_size, so do not need to crop.
