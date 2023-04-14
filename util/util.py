@@ -34,6 +34,7 @@ def prepare_condition(opt, multi_linear, att_embs, segs):
                 condition[part_index[:, 0], part_index[:, 1], :] = part_emb[part_index[:, 0], j + 1, :]
         else:
             # dataset_mode == landscape: segs: [bs, idf (7), ih, iw]; attr: [bs, cdf(256), split_Num(7)]
+            # or dataset_mode == traffic : segs: [bs, idf (6), ih, iw]; attr: [bs, cdf(256), split_Num(6)]
             part_emb = re_attr_emb[i].permute(0, 2, 1)  # [bs, 7, 256]
             condition = torch.zeros([batch_size, height * width, opt.text_embedding_dim]).cuda()
             seg = segs.view(batch_size, opt.label_nc, height * width)
@@ -167,7 +168,13 @@ def visualize_result(generate_fake_b, indexs, opt, img_dir):
             filename = filename[: -4] + '.png'
             fake_b_path = os.path.join(img_dir, filename)
             save_image(trans_fake_img_b[index], fake_b_path)
-
+    
+    elif opt.dataset_mode == 'traffic':
+        for index in range(trans_fake_img_b.shape[0]):
+            filename = indexs[index].replace('/', '-')
+            assert filename.endswith('.png')
+            fake_b_path = os.path.join(img_dir, filename)
+            save_image(trans_fake_img_b[index], fake_b_path)
 
 
 def mkdirs(paths):
