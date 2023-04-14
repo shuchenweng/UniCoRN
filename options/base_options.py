@@ -30,10 +30,10 @@ class BaseOptions():
         parser.add_argument('--preprocess_mode', type=str, default='scale_width_and_crop', help='scaling and cropping of images at load time.')
         parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data argumentation')
 
-        parser.add_argument('--dataroot', type=str, default='E:/samsung/datasets/GEN/vip') # LandscapeHD | vip
+        parser.add_argument('--dataroot', type=str, default='E:/samsung/datasets/GEN/vip') # LandscapeHD | vip | camera_lidar_semantic
         parser.add_argument('--pretrained_dir', type=str, default='E:/samsung/pretrained/unicorn/pretrained_weights/')
         parser.add_argument('--checkpoints_dir', type=str, default='E:/samsung/modelsets/unicorn/save_weights', help='models are saved here')
-        parser.add_argument('--dataset_mode', type=str, default='vip') # vip | landscape
+        parser.add_argument('--dataset_mode', type=str, default='vip') # vip | landscape | traffic
 
         # networks
         parser.add_argument('--netG', type=str, default='spade', help='selects model to use for netG (pix2pixhd | spade)')
@@ -87,7 +87,7 @@ class BaseOptions():
         parser = model_option_setter(parser, self.isTrain)
 
         # modify dataset-related parser options
-        dataset_mode = opt.dataset_mode     # vip or landscape, need to choose
+        dataset_mode = opt.dataset_mode     # vip or landscape or traffic, need to choose
         dataset_option_setter = data.get_option_setter(dataset_mode)
         parser = dataset_option_setter(parser)
         opt, unknown = parser.parse_known_args()

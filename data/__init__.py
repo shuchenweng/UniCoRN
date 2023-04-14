@@ -18,7 +18,7 @@ def get_option_setter(dataset_name):
     elif dataset_name == 'landscape':
         dataset_class = LandscapeDataset
         return dataset_class.modify_commandline_options
-    elif dataset_name == 'camera_lidar_semantic':
+    elif dataset_name == 'traffic':
         dataset_class = TrafficDataset
         return dataset_class.modify_commandline_options
     else:
