@@ -35,7 +35,7 @@ class Conv_ImgEncoder(nn.Module):
         if opt.crop_size == 64:
             stride_list = [1, 1, 1]
         elif opt.crop_size == 256:
-            if opt.dataset_mode == 'landscape':
+            if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
                 stride_list = [2, 2, 1]
             else:
                 stride_list = [2, 2, 2]
@@ -46,7 +46,7 @@ class Conv_ImgEncoder(nn.Module):
         self.layer4 = norm_layer(nn.Conv2d(ndf * 8, ndf * 16, kw, stride=stride_list[0], padding=pw, groups=self.split_num))
         self.layer5 = norm_layer(nn.Conv2d(ndf * 16, ndf * 32, kw, stride=stride_list[1], padding=pw, groups=self.split_num))
         self.layer6 = norm_layer(nn.Conv2d(ndf * 32, ndf * 64, kw, stride=stride_list[2], padding=pw, groups=self.split_num))
-        if opt.dataset_mode == 'landscape':
+        if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
             if opt.crop_size == 256:
                 self.grain_layer1 = conv1x1(ndf * 16, ndf * 64)
                 self.grain_layer2 = conv1x1(ndf * 8, ndf * 64)
@@ -83,7 +83,7 @@ class Conv_ImgEncoder(nn.Module):
             x_2 = self.actvn(x_2)
             return [x, x_1, x_2], images
 
-        elif self.opt.dataset_mode == 'landscape':
+        elif self.opt.dataset_mode == 'landscape' or self.opt.dataset_mode == 'traffic':
             x = self.layer1(images)
             # --> [bs, ndf * 2, 128, 64]
             x = self.layer2(self.actvn(x))
@@ -116,7 +116,7 @@ class Conv_ImgEncoder(nn.Module):
         # input_semantic --> [b_size, 11, 512, 256]
         batch_size = input_semantic.size(0)
         ih, iw = input_semantic.size(2), input_semantic.size(3)
-        if self.opt.dataset_mode != 'landscape':
+        if self.opt.dataset_mode != 'landscape' and self.opt.dataset_mode != 'traffic':
             sourceL = ih * iw
             seg_mask = input_semantic.view(batch_size, self.semantic_nc, sourceL)
             max_seg = torch.zeros(batch_size, sourceL)
