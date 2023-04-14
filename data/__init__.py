@@ -8,6 +8,7 @@ import torch.utils.data
 import threading
 from .vip_dataset import VipDataset
 from .landscape_dataset import LandscapeDataset
+from .traffic_dataset import TrafficDataset
 
 def get_option_setter(dataset_name):
     # modify corresponding options according to different datasets.
@@ -17,17 +18,23 @@ def get_option_setter(dataset_name):
     elif dataset_name == 'landscape':
         dataset_class = LandscapeDataset
         return dataset_class.modify_commandline_options
+    elif dataset_name == 'camera_lidar_semantic':
+        dataset_class = TrafficDataset
+        return dataset_class.modify_commandline_options
     else:
         raise NotImplementedError
 
 
 def create_dataloader(opt):
-    # vip/landscape
+    # vip/landscape/traffic
     if opt.dataset_mode == 'vip':
         instance = VipDataset()
         instance.initialize(opt)
     elif opt.dataset_mode == 'landscape':
         instance = LandscapeDataset()
+        instance.initialize(opt)
+    elif opt.dataset_mode == 'traffic':
+        instance = TrafficDataset()
         instance.initialize(opt)
     else:
         raise NotImplementedError
