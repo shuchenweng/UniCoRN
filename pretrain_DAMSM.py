@@ -20,6 +20,7 @@ from models.networks.encoder import LabelEncoder
 from models.networks.encoder import CNN_ENCODER, Conv_ImgEncoder
 from manu_data import vip_split_attr
 from manu_data_flickr import land_split_attr as land_split_attr
+from manu_data_traffic import traffic_split_attr as traffic_split_attr
 from options.train_options import TrainOptions
 from options.test_options import TestOptions
 import torch.nn as nn
@@ -54,14 +55,14 @@ def prepare_data(data, opt):
     data['key'] = data['key']
     data['acts'] = data['acts'].cpu().numpy()
     data['att'] = data['att'].cuda()
-    if opt.dataset_mode == 'landscape':
+    if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
         data['class_id'] = None
     elif opt.dataset_mode == 'vip':
         data['class_id'] = data['class_id'].cpu().numpy()
     input_semantics = data['label'].float()
-    if opt.dataset_mode == 'landscape':
+    if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
         batch_size = data['att'].shape[0]
-        reshape_att = data['att'].view(batch_size, -1)  # [bs, 7*70]
+        reshape_att = data['att'].view(batch_size, -1)  # [bs, 7*70] or [bs, 6*60]
         index = torch.nonzero(reshape_att)
         if len(index) != batch_size:
             print('index != bs')
@@ -89,6 +90,8 @@ def train(dataloader, image_encoder, text_encoder, label_tensor, optimizer, opt)
         region_features, seg_image = image_encoder(img, seg)
         if opt.dataset_mode == 'landscape':
             word_num = len(land_split_attr)
+        elif opt.dataset_mode == 'traffic':
+            word_num = len(traffic_split_attr)
         else:
             word_num = len(vip_split_attr)
         w_loss0, w_loss1, _, correct, total_m = words_loss(region_features, seg, att_emb, match_label, word_num,
@@ -116,6 +119,8 @@ def evaluate(dataloader, image_encoder, text_encoder, label_tensor, opt):
             region_features, _ = image_encoder(img, seg)
             if opt.dataset_mode == 'landscape':
                 word_num = len(land_split_attr)
+            elif opt.dataset_mode == 'traffic':
+                word_num = len(traffic_split_attr)
             else:
                 word_num = len(vip_split_attr)
             w_loss0, w_loss1, _, correct, total_m = words_loss(region_features, seg, att_emb, match_label, word_num,
