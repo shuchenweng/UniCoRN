@@ -43,7 +43,7 @@ def func_attention_original(query, context, segs, opt):
     seg = seg.view(batch_size, opt.label_nc, sourceL)
     # [8, 19, 289 (17 * 17)]
     max_seg = torch.zeros(batch_size, sourceL)
-    if opt.dataset_mode == 'landscape':
+    if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
         for i in range(opt.label_nc):
             nonzero = torch.nonzero(seg[:, i, :])
             max_seg[nonzero[:, 0], nonzero[:, 1]] = i
@@ -144,7 +144,7 @@ def words_loss(img_features, segs, att_embs, labels, words_num, class_ids, corre
     similarities = similarities * opt.smooth_gamma3
     if class_ids is not None:
         similarities.data.masked_fill_(masks, -float('inf'))
-    if opt.dataset_mode == 'landscape':
+    if opt.dataset_mode == 'landscape' or opt.dataset_mode == 'traffic':
         # 多标签的检索训练方式，比如同一个Batch中出现不止一个相同的attr: blue-sky，那么对应image中也有多个属于正确答案
         dd = defaultdict(list)
         attr_relist = attr_relist.cpu().numpy().tolist()
