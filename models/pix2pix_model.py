@@ -14,6 +14,7 @@ from torch.utils import model_zoo
 from models.networks.word_losses import words_loss
 from manu_data import vip_split_attr
 from manu_data_flickr import land_split_attr as split_attr_flickr
+from manu_data_traffic import traffic_split_attr as split_attr_traffic
 import torch.nn.functional as F
 import pickle
 
@@ -57,7 +58,7 @@ class Pix2PixModel(torch.nn.Module):
     def prepare_labels(self, batch_size):
         label_tensor = torch.Tensor(range(self.opt.split_num)).long().cuda()
         match_labels = Variable(torch.LongTensor(range(batch_size))).cuda()
-        if self.opt.dataset_mode == 'landscape':
+        if self.opt.dataset_mode == 'landscape' or self.opt.dataset_mode == 'traffic':
             match_labels = None
         return label_tensor, match_labels
 
@@ -99,6 +100,8 @@ class Pix2PixModel(torch.nn.Module):
 
                 if self.opt.dataset_mode == 'landscape':
                     word_num = len(split_attr_flickr)
+                elif self.opt.dataset_mode == 'traffic':
+                    word_num = len(split_attr_traffic)
                 else:
                     word_num = len(vip_split_attr)
                 _, _, _, correct, total_m = words_loss(region_features, input_semantics, att_emb, match_labels, word_num, class_id, correct, self.opt, attr_relist, total_m)
@@ -160,7 +163,13 @@ class Pix2PixModel(torch.nn.Module):
             elif opt.crop_size == 512:
                 pretrained_dir = os.path.join(opt.pretrained_dir, 'landscape-512', 'text_encoder_512_multi_True_split_image.pth')
                 pretrained_dir_img = os.path.join(opt.pretrained_dir, 'landscape-512', 'image_encoder_512_multi_True_split_image.pth')
-
+        elif opt.dataset_mode == 'traffic':
+            if opt.crop_size == 256:
+                pretrained_dir = os.path.join(opt.pretrained_dir, 'traffic-256', 'text_encoder_256_split_image_multi_True.pth')
+                pretrained_dir_img = os.path.join(opt.pretrained_dir, 'traffic-256', 'image_encoder_256_split_image_multi_True.pth')
+            elif opt.crop_size == 512:
+                pretrained_dir = os.path.join(opt.pretrained_dir, 'traffic-512', 'text_encoder_512_multi_True_split_image.pth')
+                pretrained_dir_img = os.path.join(opt.pretrained_dir, 'traffic-512', 'image_encoder_512_multi_True_split_image.pth')
         elif opt.dataset_mode == 'vip':
             pretrained_dir = os.path.join(opt.pretrained_dir, 'vip', 'text_encoder_256_data_vip_multi_True_split_image.pth')
             pretrained_dir_img = os.path.join(opt.pretrained_dir, 'vip', 'image_encoder_256_data_vip_multi_True_split_image.pth')
@@ -192,17 +201,17 @@ class Pix2PixModel(torch.nn.Module):
             data['key'] = data['key']
             data['acts'] = data['acts'].cuda()
             data['att'] = data['att'].cuda()
-            if self.opt.dataset_mode == 'landscape':
+            if self.opt.dataset_mode == 'landscape' or self.opt.dataset_mode == 'traffic':
                 data['class_id'] = None
             elif self.opt.dataset_mode == 'vip':
                 data['class_id'] = data['class_id'].cpu().numpy()
             data['background'] = data['background'].cuda()
         # create one-hot label map
         input_semantics = data['label'].float()
-        if self.opt.dataset_mode == 'landscape':
+        if self.opt.dataset_mode == 'landscape' or self.opt.dataset_mode == 'traffic':
             # only 1 class set as foreground, others background.
             batch_size = data['att'].shape[0]
-            reshape_att = data['att'].view(batch_size, -1)  # [bs, 7*70]
+            reshape_att = data['att'].view(batch_size, -1)  # [bs, 7*70] or [bs, 6*60]
             index = torch.nonzero(reshape_att)
             if len(index) != batch_size:
                 print('index != bs')
@@ -235,6 +244,8 @@ class Pix2PixModel(torch.nn.Module):
         region_features, _ = self.image_encoder(fake_image, input_semantics)
         if self.opt.dataset_mode == 'landscape':
             word_num = len(split_attr_flickr)
+        elif self.opt.dataset_mode == 'traffic':
+            word_num = len(split_attr_traffic)
         else:
             word_num = len(vip_split_attr)
         w_loss0, w_loss1, _, _, _= words_loss(region_features, input_semantics, att_emb, match_label, word_num, class_ids, 0, self.opt, attr_relist, 0)
